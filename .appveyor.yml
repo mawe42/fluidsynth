@@ -7,23 +7,6 @@ build:
 configuration:
   - Release
   
-environment:
-  gnome-url: http://ftp.gnome.org/pub/gnome/binaries
-  glib-url: glib/2.26/glib_2.26.1-1
-  glib-dev-url: glib/2.26/glib-dev_2.26.1-1
-  pkg-config-url: dependencies/pkg-config_0.23-2
-  gettext-url: dependencies/gettext-runtime_0.18.1.1-2
-  proxy-libintl-dev-url: dependencies/proxy-libintl-dev_20100902
-
-  matrix:
-    - platform: x86
-      arch: win32
-      generator: Visual Studio 14 2015
-
-    - platform: x64
-      arch: win64
-      generator: Visual Studio 14 2015 Win64
-
 init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
@@ -31,32 +14,22 @@ on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
-  - mkdir c:\deps
-  - cd c:\deps
-  - curl -fsS -o glib.zip %gnome-url%/%arch%/%glib-url%_%arch%.zip
-  - curl -fsS -o glib-dev.zip %gnome-url%/%arch%/%glib-dev-url%_%arch%.zip
-  - curl -fsS -o pkg-config.zip %gnome-url%/%arch%/%pkg-config-url%_%arch%.zip
-  - curl -fsS -o gettext.zip %gnome-url%/%arch%/%gettext-url%_%arch%.zip
-  - curl -fsS -o libintl-dev.zip %gnome-url%/%arch%/%proxy-libintl-dev-url%_%arch%.zip
-  - 7z x glib.zip > NUL
-  - 7z x glib-dev.zip > NUL
-  - 7z x pkg-config.zip > NUL
-  - 7z x gettext.zip > NUL
-  - 7z x libintl-dev.zip > NUL
-  - SET PATH=C:\deps\bin;%PATH%
+  - vcpkg install glib
+
+cache: c:\tools\vcpkg\installed\ -> .appveyor_vcpkgs
 
 build_script:
 #  - call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
 #  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
-  - cd C:\projects\fluidsynth
+#  - cd C:\projects\fluidsynth
   - mkdir build
   - cd build
-  - cmake -G "%generator%" ..
-  - cmake --build . --config Release
+#  - cmake -G "%generator%" ..
+#  - cmake --build . --config Release
   
-after_build:
-  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\* c:\deps\bin\libglib*.dll c:\deps\bin\libgthread*.dll c:\deps\bin\*intl*.dll
+#after_build:
+#  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\* c:\deps\bin\libglib*.dll c:\deps\bin\libgthread*.dll c:\deps\bin\*intl*.dll
 
-artifacts:
-  - path: build/fluidsynth.zip
-    name: FluidSynth
+#artifacts:
+#  - path: build/fluidsynth.zip
+#    name: FluidSynth
