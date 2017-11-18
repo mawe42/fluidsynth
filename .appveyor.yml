@@ -14,7 +14,8 @@ on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
-  - vcpkg install glib
+  - set /p VCPKGS=<.appveyor_vcpkgs
+  - vcpkg install %VCPKGS%
 
 cache: c:\tools\vcpkg\installed\ -> .appveyor_vcpkgs
 
@@ -24,8 +25,8 @@ build_script:
 #  - cd C:\projects\fluidsynth
   - mkdir build
   - cd build
-#  - cmake -G "%generator%" ..
-#  - cmake --build . --config Release
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  - cmake --build . --config Release
   
 #after_build:
 #  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\* c:\deps\bin\libglib*.dll c:\deps\bin\libgthread*.dll c:\deps\bin\*intl*.dll
