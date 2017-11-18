@@ -23,7 +23,9 @@ environment:
     - platform: x64
       arch: win64
       generator: Visual Studio 14 2015 Win64
-      
+
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
   - mkdir c:\deps
