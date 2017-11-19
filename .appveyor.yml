@@ -8,7 +8,7 @@ configuration:
   - Release
 
 environment:
-  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+#  APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
   matrix:
       - platform: x86
@@ -21,23 +21,24 @@ environment:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
+  - cd c:\tools\vcpkg\installed\
+  - curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
+  - 7z x deps.zip
   - vcpkg install glib:x86-windows
   - vcpkg install glib:x64-windows
 
-cache: c:\tools\vcpkg\installed\ -> .appveyor_cache
+# cache: c:\tools\vcpkg\installed\ -> .appveyor_cache
 
 build_script:
+  - cd c:\projects\fluidsynth
   - mkdir build
   - cd build
-#- cmake -G "%generator%" -Denable-pkgconfig=0 %cmake-args% -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-#- cmake --build . --config Release
+  - cmake -G "%generator%" -Denable-pkgconfig=0 %cmake-args% -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  - cmake --build . --config Release
   
 after_build:
-# - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\*
-  - 7z a deps.zip C:\tools\vcpkg\installed\*
+  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\*
 
 artifacts:
-#  - path: build/fluidsynth.zip
-# name: FluidSynth
-  - path: build/deps.zip
-    name: VCPKG deps
+  - path: build/fluidsynth.zip
+    name: FluidSynth
