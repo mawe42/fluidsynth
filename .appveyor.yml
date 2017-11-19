@@ -17,26 +17,27 @@ environment:
       - platform: x64
         generator: Visual Studio 14 2015 Win64
   
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#on_finish:
+#- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
-  - vcpkg install glib:%platform%-windows
+  - vcpkg install glib:x86-windows
+  - vcpkg install glib:x64-windows
 
 cache: c:\tools\vcpkg\installed\ -> .appveyor_cache
 
 build_script:
-#  - call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
-#  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
-#  - cd C:\projects\fluidsynth
   - mkdir build
   - cd build
-  - cmake -G "%generator%" -Denable-pkgconfig=0 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-  - cmake --build . --config Release
+#- cmake -G "%generator%" -Denable-pkgconfig=0 %cmake-args% -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+#- cmake --build . --config Release
   
-#after_build:
-#  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\* c:\deps\bin\libglib*.dll c:\deps\bin\libgthread*.dll c:\deps\bin\*intl*.dll
+after_build:
+# - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\*
+  - 7z a deps.zip C:\tools\vcpkg\installed\*
 
-#artifacts:
+artifacts:
 #  - path: build/fluidsynth.zip
-#    name: FluidSynth
+# name: FluidSynth
+  - path: build/deps.zip
+    name: VCPKG deps
