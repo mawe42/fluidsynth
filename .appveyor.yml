@@ -31,7 +31,7 @@ environment:
 install:
   - mkdir c:\tools\vcpkg\installed
   - curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
-  - 7z x c:\deps.zip -o c:\tools\vcpkg\installed
+  - 7z x c:\deps.zip -oc:\tools\vcpkg\installed
   - vcpkg install glib:%platform%-windows
   - if %ladspa%==yes curl -fsS -o c:\tools\vcpkg\installed\%platform%-windows\include\ladspa.h http://ladspa.org/ladspa_sdk/ladspa.h.txt
 
