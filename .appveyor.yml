@@ -21,9 +21,9 @@ cache:
   - c:\Tools\vcpkg\installed
 
 init:
-  - if EXIST .appveyor_deps mkdir c:\Tools\vcpkg\installed
-  - if EXIST .appveyor_deps curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
-  - if EXIST .appveyor_deps 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
+  - if EXIST C:\projects\fluidsynth\.appveyor_deps mkdir c:\Tools\vcpkg\installed
+  - if EXIST C:\projects\fluidsynth\.appveyor_deps curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
+  - if EXIST C:\projects\fluidsynth\.appveyor_deps 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
   
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
