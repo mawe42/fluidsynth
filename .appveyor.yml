@@ -25,7 +25,7 @@ install:
   - mkdir installed
   - cd installed
   - curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
-  - 7z x deps.zip
+  - 7z x c:\deps.zip
   - vcpkg install glib:x86-windows
   - vcpkg install glib:x64-windows
 
