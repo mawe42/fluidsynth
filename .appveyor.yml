@@ -21,9 +21,9 @@ cache:
   - c:\Tools\vcpkg\installed
 
 init:
-  - mkdir c:\Tools\vcpkg\installed
-  - curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
-  - 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
+  - if EXISTS .appveyor_deps mkdir c:\Tools\vcpkg\installed
+  - if EXISTS .appveyor_deps curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
+  - if EXISTS .appveyor_deps 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
   
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -37,9 +37,9 @@ build_script:
     #  - cmake -G "%generator%" -Denable-pkgconfig=0 %cmake-args% -DCMAKE_TOOLCHAIN_FILE=c:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
     #- cmake --build . --config Release
   
-after_build:
-  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\*
-
-artifacts:
-  - path: build/fluidsynth.zip
-    name: FluidSynth
+    #after_build:
+    #  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\*
+    #
+    #artifacts:
+    #  - path: build/fluidsynth.zip
+    #    name: FluidSynth
