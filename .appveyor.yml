@@ -8,38 +8,34 @@ configuration:
   - Release
 
 environment:
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+
   matrix:
       - platform: x86
         generator: Visual Studio 14 2015
-        ladspa: yes
 
       - platform: x64
         generator: Visual Studio 14 2015 Win64
-        ladspa: yes
 
-      - platform: x86
-        generator: Visual Studio 14 2015
-        ladspa: no
+cache:
+  - c:\Tools\vcpkg\installed
 
-      - platform: x64
-        generator: Visual Studio 14 2015 Win64
-        ladspa: no
+init:
+  - mkdir c:\Tools\vcpkg\installed
+  - curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
+  - 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
   
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
-  - mkdir c:\tools\vcpkg\installed
-  - curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
-  - 7z x c:\deps.zip -oc:\tools\vcpkg\installed
   - vcpkg install glib:%platform%-windows
-  - if %ladspa%==yes curl -fsS -o c:\tools\vcpkg\installed\%platform%-windows\include\ladspa.h http://ladspa.org/ladspa_sdk/ladspa.h.txt
 
 build_script:
   - mkdir build
   - cd build
-  - cmake -G "%generator%" -Denable-pkgconfig=0 %cmake-args% -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-  - cmake --build . --config Release
+    #  - cmake -G "%generator%" -Denable-pkgconfig=0 %cmake-args% -DCMAKE_TOOLCHAIN_FILE=c:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    #- cmake --build . --config Release
   
 after_build:
   - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\*
