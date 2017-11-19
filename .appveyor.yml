@@ -25,8 +25,8 @@ on_finish:
   
 install:
   - if NOT EXIST c:\Tools\vcpkg\installed mkdir c:\Tools\vcpkg\installed
-  - if EXIST .appveyor_deps curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
-  - if EXIST .appveyor_deps 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
+  - if NOT EXIST c:\Tools\vcpkg\installed if EXIST .appveyor_deps curl -fsS -o c:\deps.zip http://www.midigurdy.com/deps.zip
+  - if NOT EXIST c:\Tools\vcpkg\installed if EXIST .appveyor_deps 7z x c:\deps.zip -oc:\Tools\vcpkg\installed
   - vcpkg install glib:%platform%-windows
 
 build_script:
