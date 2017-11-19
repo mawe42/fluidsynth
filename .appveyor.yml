@@ -9,13 +9,19 @@ configuration:
 
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
+
+  matrix:
+      - platform: x86
+        generator: Visual Studio 14 2015
+
+      - platform: x64
+        generator: Visual Studio 14 2015 Win64
   
 on_finish:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   
 install:
-  - vcpkg install glib:x86-windows
-  - vcpkg install glib:x64-windows
+  - vcpkg install glib:%platform%-windows
 
 cache: c:\tools\vcpkg\installed\ -> .appveyor_cache
 
@@ -25,8 +31,8 @@ build_script:
 #  - cd C:\projects\fluidsynth
   - mkdir build
   - cd build
-# - cmake -G "Visual Studio 14 2015" -Denable-pkgconfig=0 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-# - cmake --build . --config Release
+  - cmake -G "%generator%" -Denable-pkgconfig=0 -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  - cmake --build . --config Release
   
 #after_build:
 #  - 7z a fluidsynth.zip %APPVEYOR_BUILD_FOLDER%\build\src\Release\* c:\deps\bin\libglib*.dll c:\deps\bin\libgthread*.dll c:\deps\bin\*intl*.dll
